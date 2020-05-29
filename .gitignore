@@ -6,3 +6,4 @@ selenium-debug.log
 .idea
 .eslintrc.js
 .eslintignore
+.vscode
