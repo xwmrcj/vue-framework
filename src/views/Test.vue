@@ -3,16 +3,14 @@
 
 
  <Row >
-
     <Col :sm="24" :md="8">
         <h3>后台管理</h3>
     </Col>
-    
    <Col :sm="24" :md="8">
-    <h2>this is a test page</h2>
-        
+    <h2>this is a test page</h2>  
       </Col>
 </Row>
+
 <Row>
   <Button type="ghost" @click="Csocket">与后端连接</Button>
 </Row>
@@ -31,20 +29,27 @@
     </tbody>
   </table>
 </Row>
+
+<Row>
+  <Input/>
+</Row>
+
   </div>
 </template>
 
 <script>
+import Input from './Input';
 
 export default {
-  name: 'dashboard',
+  name: 'test',
   components:{
+    Input
     },
   data () {
     return {
         msgs: [],
         Isshow:true,
-    }
+    }   
   },
   methods:{
     test_logout(){
@@ -59,6 +64,8 @@ export default {
       //this指向vue实例
       ws.onmessage = (event) =>{
         console.log(typeof this.msgs);
+        console.log(event);
+        console.log(event.data);
         var json = JSON.parse(event.data);
         let msg = [json['time'],json['msg']];
         this.msgs.push(msg);
