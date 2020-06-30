@@ -9,6 +9,7 @@ import Buttons from '@/views/components/Buttons'
 // Views - Pages
 import Page404 from '@/views/errorPages/Page404'
 import Page500 from '@/views/errorPages/Page500'
+import AsphaltRoad from "../views/components/el-table";
 
 
 /* login */
@@ -64,6 +65,8 @@ export const asyncRouterMap = [
                     {path: 'transfer',name: 'Transfer穿梭框',icon:'ios-pause-outline',component: _import('components/Transfer')},
                     {path: 'timepicker',name: 'Timepicker',icon:'ios-clock-outline',component: _import('components/Timepicker')},
                     {path: 'upload',name: 'Upload上传',icon:'ios-cloud-upload-outline',component: _import('components/Upload')},
+                    {path: 'AsphaltRoad', name: 'AsphaltRoad沥青路',icon:'ios-clock-outline', component: _import('components/el-table')},
+                    {path: 'Table',name: 'Table',icon:'ios-cloud-upload-outline',component: _import('components/Table')},
                   ]
       },
        {path: '/charts',name: 'echart图表',redirect: '/charts/shopchart',icon:'pie-graph',
@@ -75,11 +78,16 @@ export const asyncRouterMap = [
       },
       {path: '/table', name: '表格综合实例',icon:'ios-paper',component: _import('Table'),meta: { role: ['admin'] }},
       // {path: '/jsontree', name: 'JSON视图',icon:'merge',component: _import('JsonTree')},
-      {path: '/test', name: '测试页面',icon:'merge',component: _import('Test')},
       {path: '/tabledetail/:id',name: 'TableDetail', hidden:true, component: _import('TableDetail')},
+      {path: '/aaa', name: '测试', icon: "bookmark", component: _import('VueTest')},
+      {path:'/RoadInformation', name: '道路基本信息', icon: "bookmark", component: _import('RoadInformation')},
+      {path:'/DailyReport', name: '日常巡检表', icon: 'merge', component: _import('DailyReport')},
+      {path:'/FlatReport', name: '道路平整度检测表', icon: 'ios-paper', component: _import('FlatReport')},
+      {path:'/DamageReport', name: '道路损坏记录表', icon: 'ios-paper', component: _import('DamageReport')},
+      {path: '/RegularReport', name: '定期检查', icon: 'ios-paper', component: _import('RegularReport')}
       // {path: '/tinymce',name: 'Tinymce编辑器',icon:"android-document",component: _import('Tinymce')},
       // {path: '/markdown',name: 'Markdown',icon:"android-list",component: _import('Markdown')},
-      
+
     ]
   },
 

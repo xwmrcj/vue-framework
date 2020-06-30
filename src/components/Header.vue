@@ -79,7 +79,7 @@
         <a href="javascript:void(0)">
            <span slot="button">
           <img src="static/img/avatars/6.jpg" class="img-avatar" alt="o">
-          <span class="d-md-down-none">admin</span>
+          <span class="d-md-down-none">user</span>
           </span>
         </a>
         <Dropdown-menu slot="list">

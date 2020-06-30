@@ -2,14 +2,14 @@
     <div class="login-container" style="background-color: #141a48;margin: 0px;overflow: hidden;">
     <div id="canvascontainer" ref='can'></div>
 
-    <Form ref="loginForm" autoComplete="on" :model="loginForm" :rules="loginRules"  class="card-box login-form">
+    <Form ref="loginForm" autoComplete="on" :model="loginInfo" class="card-box login-form">
         <Form-item prop="email">
-            <Input type="text" v-model="loginForm.email" placeholder="Username" autoComplete="on">
+            <Input type="text" v-model="loginInfo.LoginName" placeholder="Username" autoComplete="on">
                 <Icon type="ios-person-outline" slot="prepend" ></Icon>
             </Input>
         </Form-item>
         <Form-item prop="password">
-            <Input type="password" v-model="loginForm.password" placeholder="Password" @keyup.enter.native="handleLogin">
+            <Input type="password" v-model="loginInfo.LoginPwd" placeholder="Password" @keyup.enter.native="handleLogin">
                 <Icon type="ios-locked-outline" slot="prepend"></Icon>
             </Input>
         </Form-item>
@@ -37,16 +37,38 @@
           }
         };
         const validatePass = (rule, value, callback) => {
+            console.log(value.length);
           if (value.length < 6) {
             callback(new Error('密码不能小于6位'));
           } else {
             callback();
           }
         };
+        const validateN = (rule, value, callback) => {
+            console.log(value.length);
+          if (value.length === 0) {
+            callback(new Error('用户名不能为空'));
+          } else {
+            callback();
+          }
+        };
+        const validateP = (rule, value, callback) => {
+            console.log(value.length);
+          if (value.length === 0) {
+            callback(new Error('密码不能为空'));
+          } else {
+            callback();
+          }
+        };
         return {
+          loginInfo: {
+            "OT": 1,
+            "LoginName": "",
+            "LoginPwd": "",
+          },
           loginForm: {
             email: 'admin@wz.com',
-            password: ''
+            password: '123456'
           },
           loginRules: {
             email: [
@@ -55,6 +77,14 @@
             password: [
                 { required: true, trigger: 'blur', validator: validatePass }
             ]
+          },
+          userRules: {
+            userName: [
+                { required: true, message: '用户名不能为空', trigger: 'blur' }
+            ],
+            userPassword: [
+                { required: true, trigger: 'blur', validator: validateP }
+            ],
           },
           loading: false,
           showDialog: false
@@ -113,23 +143,57 @@ animate();
        },
       methods: {
         handleLogin() {
-          this.$refs.loginForm.validate(valid => {
-            if (valid) {
-              this.loading = true;
-              this.$store.dispatch('LoginByEmail', this.loginForm).then(() => {
-                this.$Message.success('登录成功');
-                
-                this.loading = false;
-                this.$router.push({ path: '/' });
-              }).catch(err => {
-                this.$message.error(err);
-                this.loading = false;
-              });
-            } else {
-              console.log('error submit!!');
-              return false;
-            }
-          });
+          let ws = new WebSocket(this.$store.state.verification.Address);
+          ws.onopen =()=> {
+              ws.send(JSON.stringify(this.loginInfo));
+          };
+          ws.onmessage =(event)=>{
+              var json = JSON.parse(event.data);
+              this.result = json['result'];
+              if (this.result === 1){
+
+                  let text = {'result': 1, 'UserName':json['UserName'], 'UserNo':json['UserNo'], 'AuthorityLevel':json['AuthorityLevel'] , 'Token':json['Token']};
+                  this.$store.commit('receiveInfo',text);
+                    console.log(text);
+                  this.$refs.loginForm.validate(valid => {
+                    if (valid) {
+                      this.loading = true;
+                      this.$store.dispatch('LoginByEmail', this.loginForm).then(() => {
+                        this.$Message.success('登录成功');
+
+                        this.loading = false;
+                        this.$router.push({ path: '/' });
+                      }).catch(err => {
+                        this.$message.error(err);
+                        this.loading = false;
+                      });
+                    } else {
+                      console.log('error submit!!');
+                      return false;
+                    }
+                  });
+              }
+              if (this.result === 0){
+                  this.$Message.error('操作失败!');
+              }
+          };
+          // this.$refs.loginForm.validate(valid => {
+          //   if (valid) {
+          //     this.loading = true;
+          //     this.$store.dispatch('LoginByEmail', this.loginForm).then(() => {
+          //       this.$Message.success('登录成功');
+          //
+          //       this.loading = false;
+          //       this.$router.push({ path: '/' });
+          //     }).catch(err => {
+          //       this.$message.error(err);
+          //       this.loading = false;
+          //     });
+          //   } else {
+          //     console.log('error submit!!');
+          //     return false;
+          //   }
+          // });
         },
       },
     }

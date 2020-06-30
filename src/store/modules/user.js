@@ -69,6 +69,7 @@ const user = {
         loginByEmail(email, userInfo.password).then(response => {
           const data = response.data;
           console.log(response.data);
+          console.log(1111);
           Cookies.set('Admin-Token', response.data.token);
           commit('SET_TOKEN', data.token);
           commit('SET_EMAIL', email);
@@ -85,6 +86,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
           const data = response.data;
+          console.log(response.data);
           commit('SET_ROLES', data.role);
           commit('SET_NAME', data.name);
           commit('SET_AVATAR', data.avatar);

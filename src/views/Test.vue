@@ -1,45 +1,43 @@
 <template>
   <div class="animated fadeIn">
+    <Row >
+        <Col :sm="24" :md="8">
+            <h3>后台管理</h3>
+        </Col>
+        <Col :sm="24" :md="8">
+            <h2>this is a test page</h2>
+            <h2>{{name}}</h2>
+        </Col>
+    </Row>
 
+    <Row>
+        <Button type="ghost" @click="Csocket">与后端连接</Button>
+    </Row>
 
- <Row >
-    <Col :sm="24" :md="8">
-        <h3>后台管理</h3>
-    </Col>
-   <Col :sm="24" :md="8">
-    <h2>this is a test page</h2>  
-      </Col>
-</Row>
+    <Row>
+      <table class="dataintable" v-show='Isshow'>
+        <tbody>
+          <tr>
+            <th width='70%'>Time</th>
+            <th width='30%'>msg</th>
+          </tr>
+          <tr v-for="items in msgs">
+            <td>{{items[0]}}</td>
+            <td>{{items[1]}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </Row>
 
-<Row>
-  <Button type="ghost" @click="Csocket">与后端连接</Button>
-</Row>
-
-<Row>
-  <table class="dataintable" v-show='Isshow'>
-    <tbody>
-      <tr>
-        <th width='70%'>Time</th>
-        <th width='30%'>msg</th>
-      </tr>
-      <tr v-for="items in msgs">
-        <td>{{items[0]}}</td>
-        <td>{{items[1]}}</td>
-      </tr>
-    </tbody>
-  </table>
-</Row>
-
-<Row>
-  <Input/>
-</Row>
+    <Row>
+      <Input @btnClick="parentClick"/>
+    </Row>
 
   </div>
 </template>
 
 <script>
 import Input from './Input';
-
 export default {
   name: 'test',
   components:{
@@ -49,6 +47,7 @@ export default {
     return {
         msgs: [],
         Isshow:true,
+        name: this.$store.state.websocket.Token,
     }   
   },
   methods:{
@@ -60,8 +59,10 @@ export default {
         });
     },
     Csocket(){
-      var ws = new WebSocket("ws://127.0.0.1:4200/");
-      //this指向vue实例
+      var ws = new WebSocket(this.$store.state.verification.Address);
+      // let ws = this.$store.state.websocket.ws;
+      // this指向vue实例
+        console.log(ws);
       ws.onmessage = (event) =>{
         console.log(typeof this.msgs);
         console.log(event);
@@ -70,8 +71,46 @@ export default {
         let msg = [json['time'],json['msg']];
         this.msgs.push(msg);
         console.log(msg);
+      };
+      // 向后发送数据
+      ws.onopen = () =>{
+          this.$Message.success("连接成功");
+          // alert("连接成功, 请输入账号和密码");
+          console.log("hahaha");
+          let text = {"name": '宝儿姐', "age": 20, "sex": '女'};
+          ws.send(JSON.stringify(text));
+          console.log(text)
+      };
+      ws.onclose = () =>{
+          this.$Message.info("连接断开")
       }
+      //   console.log(ws.readyState)
+      // if (ws.readyState) {
+      //     console.log("hahaha")
+      //     let text = {name: '宝儿姐', age: 20, sex: '女'};
+      //     ws.send(JSON.stringify(text));
+      //     console.log(text)
+      // }console.log(typeof ws.readyState)
+
     },
+    parentClick(name){          //父接收
+        console.log(name)
+    }
+    // TestSockets() {
+    // var socket = new WebSocket("ws://127.0.0.1:4200/");
+    // var message = {
+    //     nickname: "benben_2015",
+    //     email: "123456@qq.com",
+    //     content: "I love programming"
+    // };
+    // //添加状态判断，当为OPEN时，发送消息
+    //  console.log(socket.readyState)
+    // if (socket.readyState===1) {
+    //     socket.send(JSON.stringify(message));
+    // }else{
+    //     //do something
+    // }
+    // }
   },
         //event 是传送来的 Object
         //event.data是 String 

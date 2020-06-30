@@ -4,6 +4,11 @@
 
 <script>
     export default{
-      name: 'APP'
+      name: 'APP',
+            created() {
+              if (sessionStorage.getItem('verification') !== ''){
+                      this.$store.commit('EventListener');
+              }
+            }
     }
 </script>
